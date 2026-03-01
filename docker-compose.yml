@@ -1,0 +1,14 @@
+
+services:
+  gesture_bot:
+    build: .
+    image: gesture_bot:latest
+    container_name: gesture_bot
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true
+    tty: true
