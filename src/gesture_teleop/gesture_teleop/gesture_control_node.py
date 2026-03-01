@@ -53,15 +53,11 @@ class GestureControlNode(Node):
         self.kf_y_l = SimpleKalmanFilter(); self.kf_z_l = SimpleKalmanFilter(); self.kf_roll_l = SimpleKalmanFilter()
         self.kf_y_r = SimpleKalmanFilter(); self.kf_z_r = SimpleKalmanFilter(); self.kf_roll_r = SimpleKalmanFilter()
         
-        # --- THE GOLDEN ANCHORS ---
         self.base_x = 0.45
         self.base_z = 0.71
         self.max_roll = math.radians(60)
-        # LEFT ARM points outward to the Left (+Y direction)
         self.left_safe_quat = {'w': -0.5, 'x': -0.5, 'y': 0.5, 'z': 0.5}
-        
-        # RIGHT ARM points outward to the Right (-Y direction)
-        # This is a 180-degree mathematical flip of the Left arm!
+
         self.right_safe_quat = {'w': 0.5, 'x': 0.5, 'y': 0.5, 'z': 0.5}
         
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -94,7 +90,6 @@ class GestureControlNode(Node):
                     index = hand_lms.landmark[8]
                     wrist = hand_lms.landmark[0]
                     
-                    # True Anatomical Hand Detection
                     hand_label = results.multi_handedness[idx].classification[0].label
                     is_left_arm = (hand_label == "Right") 
                     
@@ -107,8 +102,7 @@ class GestureControlNode(Node):
                     grip_msg = Bool()
                     grip_msg.data = is_pinching
 
-                    if is_left_arm:
-                        # Left Arm Math & Orientation
+                    if is_left_arm: 
                         raw_y = 1.16 + ((0.25 - lm9.x) * 1.0)
                         raw_z = self.base_z + ((0.5 - lm9.y) * 0.8)
                         
@@ -130,7 +124,6 @@ class GestureControlNode(Node):
                         self.left_grip_pub.publish(grip_msg)
                         self._draw_debug(frame, hand_lms, smooth_roll, "L")
                     else:
-                        # Right Arm Math & Orientation (Mirrored!)
                         raw_y = -1.16 + ((0.75 - lm9.x) * 1.0)
                         raw_z = self.base_z + ((0.5 - lm9.y) * 0.8)
                         
@@ -158,22 +151,16 @@ class GestureControlNode(Node):
             self.get_logger().error( f"main_loop error: {e}", throttle_duration_sec=3.0)
 
     def _draw_debug(self, frame, hand_lms, roll_rad, label):
-       
         h, w = frame.shape[:2]
         wrist = hand_lms.landmark[0]
         cx    = int(wrist.x * w)
         cy    = int(wrist.y * h)
-
         roll_deg = math.degrees(roll_rad)
         color    = (0, 255, 0) if label == "L" else (0, 128, 255)
-
-        # Rotation arc
         axes       = (30, 30)
         start_deg  = -90
         end_deg    = int(-90 + roll_deg)
         cv2.ellipse(frame, (cx, cy), axes, 0, start_deg, end_deg, color, 2)
-
-        # Text
         cv2.putText(
             frame,
             f"{label}: {roll_deg:+.0f}deg",

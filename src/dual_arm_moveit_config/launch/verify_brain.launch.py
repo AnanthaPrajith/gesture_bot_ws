@@ -26,7 +26,6 @@ def generate_launch_description():
         'urdf', 'dual_ur5.urdf.xacro'
     )
 
-    # Process xacro → URDF string at launch time
     robot_description_content = ParameterValue(
         Command(['xacro ', xacro_file]),
         value_type=str
@@ -34,14 +33,11 @@ def generate_launch_description():
     srdf       = load_file('dual_arm_moveit_config', 'config/dual_ur5_bot.srdf')
     kinematics = load_yaml('dual_arm_moveit_config', 'config/kinematics.yaml')
     ompl_yaml  = load_yaml('dual_arm_moveit_config', 'config/ompl_planning.yaml')
-
-    # ── Wrap OMPL config the way move_group expects it ──────────────────────
     planning_pipelines = {
         'planning_pipelines': ['ompl'],
-        'ompl': ompl_yaml,          # ← the wrapping happens HERE in Python
+        'ompl': ompl_yaml,      
     }
-    # ────────────────────────────────────────────────────────────────────────
-
+    
     return LaunchDescription([
         Node(
             package='tf2_ros',
@@ -61,7 +57,7 @@ def generate_launch_description():
                 {'robot_description': robot_description_content},
                 {'robot_description_semantic': srdf},
                 {'robot_description_kinematics': kinematics},
-                planning_pipelines,                  # ← replaces raw ompl_config
+                planning_pipelines,
                 {'publish_robot_description_semantic': True},
             ]
         ),
@@ -74,7 +70,7 @@ def generate_launch_description():
                 {'robot_description': robot_description_content},
                 {'robot_description_semantic': srdf},
                 {'robot_description_kinematics': kinematics},
-                planning_pipelines,                  # ← RViz also needs it
+                planning_pipelines,               
             ]
         )
     ])

@@ -5,7 +5,7 @@ from geometry_msgs.msg import Pose, PoseStamped
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Bool
 from moveit_msgs.srv import GetPositionIK
-from moveit_msgs.msg import RobotState # <--- NEW IMPORT
+from moveit_msgs.msg import RobotState
 
 class IKCommander(Node):
     def __init__(self):
@@ -53,24 +53,19 @@ class IKCommander(Node):
         req.ik_request.group_name = group_name
         req.ik_request.timeout.sec = 0
         req.ik_request.timeout.nanosec = 50000000 
-        
-        # ---> THE FIX: PROVIDE THE SEED STATE <---
+
         rs = RobotState()
         js = JointState()
         if len(self.master_joint_state) > 0:
-            # Feed MoveIt our current known joint positions
             js.name = list(self.master_joint_state.keys())
             js.position = list(self.master_joint_state.values())
         else:
-            # Dummy joint to stop the warning on the very first frame
             js.name = ['left_shoulder_pan_joint'] 
             js.position = [0.0]
             
         rs.joint_state = js
-        rs.is_diff = True # Tell MoveIt to layer this over the current physical robot
+        rs.is_diff = True 
         req.ik_request.robot_state = rs
-        # -----------------------------------------
-        
         pose_stamped = PoseStamped()
         pose_stamped.header.frame_id = 'world'
         pose_stamped.header.stamp = self.get_clock().now().to_msg()
@@ -98,7 +93,6 @@ class IKCommander(Node):
             self.get_logger().error(f"IK callback exception: {e}")
 
     def publish_merged_joints(self):
-        # List EVERY joint MoveIt mentioned in your error log
         all_joints = [
             'left_shoulder_pan_joint', 'left_shoulder_lift_joint', 'left_elbow_joint',
             'left_wrist_1_joint', 'left_wrist_2_joint', 'left_wrist_3_joint',
@@ -109,7 +103,6 @@ class IKCommander(Node):
         ]
         
         msg = JointState()
-        # Ensure we use the exact current time for the handshake
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = 'base_link'
         
@@ -118,11 +111,9 @@ class IKCommander(Node):
         
         for name in all_joints:
             names.append(name)
-            # If we have a calculated position, use it; otherwise, use a safe default
             if name in self.master_joint_state:
                 positions.append(self.master_joint_state[name])
             else:
-                # Default "Home" values
                 positions.append(-1.57 if 'lift' in name or 'wrist_1' in name else 0.0)
 
         msg.name = names

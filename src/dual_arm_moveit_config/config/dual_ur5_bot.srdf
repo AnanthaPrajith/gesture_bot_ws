@@ -12,7 +12,7 @@
     <chain base_link="right_base_link" tip_link="right_tool0"/>
   </group>
 
-  <!-- ── Left arm: all adjacent + skip-one pairs ───────────────────── -->
+  
   <disable_collisions link1="base_link"              link2="left_base_link"         reason="Adjacent"/>
   <disable_collisions link1="left_base_link"         link2="left_shoulder_link"     reason="Adjacent"/>
   <disable_collisions link1="left_shoulder_link"     link2="left_upper_arm_link"    reason="Adjacent"/>
@@ -22,13 +22,13 @@
   <disable_collisions link1="left_wrist_2_link"      link2="left_wrist_3_link"      reason="Adjacent"/>
   <disable_collisions link1="left_wrist_3_link"      link2="left_flange"            reason="Adjacent"/>
   <disable_collisions link1="left_flange"            link2="left_tool0"             reason="Adjacent"/>
-  <!-- skip-one left -->
+ 
   <disable_collisions link1="left_base_link"         link2="left_upper_arm_link"    reason="Never"/>
   <disable_collisions link1="left_shoulder_link"     link2="left_forearm_link"      reason="Never"/>
   <disable_collisions link1="left_upper_arm_link"    link2="left_wrist_1_link"      reason="Never"/>
   <disable_collisions link1="left_forearm_link"      link2="left_wrist_2_link"      reason="Never"/>
   <disable_collisions link1="left_wrist_1_link"      link2="left_wrist_3_link"      reason="Never"/>
-  <!-- left gripper -->
+ 
   <disable_collisions link1="left_tool0"             link2="left_robotiq_85_base_link"              reason="Adjacent"/>
   <disable_collisions link1="left_robotiq_85_base_link" link2="left_robotiq_85_left_knuckle_link"   reason="Adjacent"/>
   <disable_collisions link1="left_robotiq_85_base_link" link2="left_robotiq_85_right_knuckle_link"  reason="Adjacent"/>
@@ -39,7 +39,6 @@
   <disable_collisions link1="left_robotiq_85_left_knuckle_link"  link2="left_robotiq_85_right_knuckle_link"    reason="Never"/>
   <disable_collisions link1="left_wrist_3_link"      link2="left_robotiq_85_base_link"              reason="Never"/>
 
-  <!-- ── Right arm: all adjacent + skip-one pairs ──────────────────── -->
   <disable_collisions link1="base_link"              link2="right_base_link"        reason="Adjacent"/>
   <disable_collisions link1="right_base_link"        link2="right_shoulder_link"    reason="Adjacent"/>
   <disable_collisions link1="right_shoulder_link"    link2="right_upper_arm_link"   reason="Adjacent"/>
@@ -49,13 +48,13 @@
   <disable_collisions link1="right_wrist_2_link"     link2="right_wrist_3_link"     reason="Adjacent"/>
   <disable_collisions link1="right_wrist_3_link"     link2="right_flange"           reason="Adjacent"/>
   <disable_collisions link1="right_flange"           link2="right_tool0"            reason="Adjacent"/>
-  <!-- skip-one right -->
+
   <disable_collisions link1="right_base_link"        link2="right_upper_arm_link"   reason="Never"/>
   <disable_collisions link1="right_shoulder_link"    link2="right_forearm_link"     reason="Never"/>
   <disable_collisions link1="right_upper_arm_link"   link2="right_wrist_1_link"     reason="Never"/>
   <disable_collisions link1="right_forearm_link"     link2="right_wrist_2_link"     reason="Never"/>
   <disable_collisions link1="right_wrist_1_link"     link2="right_wrist_3_link"     reason="Never"/>
-  <!-- right gripper -->
+  
   <disable_collisions link1="right_tool0"             link2="right_robotiq_85_base_link"              reason="Adjacent"/>
   <disable_collisions link1="right_robotiq_85_base_link" link2="right_robotiq_85_left_knuckle_link"   reason="Adjacent"/>
   <disable_collisions link1="right_robotiq_85_base_link" link2="right_robotiq_85_right_knuckle_link"  reason="Adjacent"/>
@@ -66,34 +65,28 @@
   <disable_collisions link1="right_robotiq_85_left_knuckle_link"  link2="right_robotiq_85_right_knuckle_link"    reason="Never"/>
   <disable_collisions link1="right_wrist_3_link"     link2="right_robotiq_85_base_link"              reason="Never"/>
 
-  <!-- Right wrist self-collision false positives from UR5e mesh geometry -->
+  
   <disable_collisions link1="right_wrist_1_link" link2="right_wrist_2_link" reason="Adjacent"/>
   <disable_collisions link1="right_wrist_2_link" link2="right_wrist_3_link" reason="Adjacent"/>
   <disable_collisions link1="right_wrist_1_link" link2="right_wrist_3_link" reason="Never"/>
-
-  <!-- Same for left wrist to be consistent -->
   <disable_collisions link1="left_wrist_1_link"  link2="left_wrist_2_link"  reason="Adjacent"/>
   <disable_collisions link1="left_wrist_2_link"  link2="left_wrist_3_link"  reason="Adjacent"/>
   <disable_collisions link1="left_wrist_1_link"  link2="left_wrist_3_link"  reason="Never"/>
 
-  <!-- ── Cross-arm: base collisions ───────────────────────────────── -->
+  
   <disable_collisions link1="left_base_link"         link2="right_base_link"        reason="Never"/>
   <disable_collisions link1="base_link"              link2="left_shoulder_link"     reason="Never"/>
   <disable_collisions link1="base_link"              link2="right_shoulder_link"    reason="Never"/>
 
-  <!-- ── False-positive collision pairs found via check_state_validity ── -->
 
-  <!-- UR5e base inertia link touches shoulder at all configs -->
   <disable_collisions link1="right_base_link_inertia"   link2="right_shoulder_link"                        reason="Adjacent"/>
   <disable_collisions link1="left_base_link_inertia"    link2="left_shoulder_link"                         reason="Adjacent"/>
 
-  <!-- Robotiq 2F-85: base touches inner knuckles at rest pose -->
+ 
   <disable_collisions link1="right_robotiq_85_base_link" link2="right_robotiq_85_left_inner_knuckle_link"  reason="Adjacent"/>
   <disable_collisions link1="right_robotiq_85_base_link" link2="right_robotiq_85_right_inner_knuckle_link" reason="Adjacent"/>
   <disable_collisions link1="left_robotiq_85_base_link"  link2="left_robotiq_85_left_inner_knuckle_link"   reason="Adjacent"/>
   <disable_collisions link1="left_robotiq_85_base_link"  link2="left_robotiq_85_right_inner_knuckle_link"  reason="Adjacent"/>
-
-  <!-- Robotiq 2F-85: inner knuckles touch finger tips during grip -->
   <disable_collisions link1="right_robotiq_85_left_inner_knuckle_link"  link2="right_robotiq_85_left_finger_tip_link"  reason="Adjacent"/>
   <disable_collisions link1="right_robotiq_85_right_inner_knuckle_link" link2="right_robotiq_85_right_finger_tip_link" reason="Adjacent"/>
   <disable_collisions link1="left_robotiq_85_left_inner_knuckle_link"   link2="left_robotiq_85_left_finger_tip_link"   reason="Adjacent"/>
