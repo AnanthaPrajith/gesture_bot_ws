@@ -22,7 +22,7 @@ right_arm:
     - ESTkConfigDefault
 
 start_state_max_dt: 0.5
-jiggle_fraction: 0.05          # ← increase from default 0.02
+jiggle_fraction: 0.05          # increase from default 0.02
 max_sampling_attempts: 100
 
 planner_configs:
