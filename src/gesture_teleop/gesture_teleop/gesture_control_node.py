@@ -21,6 +21,22 @@ class SimpleKalmanFilter:
         self.p = (1 - self.k) * self.p
         return self.x
 
+def quaternion_multiply(q1, q2):
+    w = q1['w']*q2['w'] - q1['x']*q2['x'] - q1['y']*q2['y'] - q1['z']*q2['z']
+    x = q1['w']*q2['x'] + q1['x']*q2['w'] + q1['y']*q2['z'] - q1['z']*q2['y']
+    y = q1['w']*q2['y'] - q1['x']*q2['z'] + q1['y']*q2['w'] + q1['z']*q2['x']
+    z = q1['w']*q2['z'] + q1['x']*q2['y'] - q1['y']*q2['x'] + q1['z']*q2['w']
+    return {'w': w, 'x': x, 'y': y, 'z': z}
+
+def make_rotation_z(angle_rad):
+    half = angle_rad / 2.0
+    return {'w': math.cos(half), 'x': 0.0, 'y': 0.0, 'z': math.sin(half)}
+
+def compute_hand_roll(wrist, middle_mcp):
+    dx = middle_mcp.x - wrist.x
+    dy = -(middle_mcp.y - wrist.y)  
+    return math.atan2(dx, dy) 
+
 class GestureControlNode(Node):
     def __init__(self):
         super().__init__('gesture_control_node')
@@ -34,13 +50,13 @@ class GestureControlNode(Node):
         self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7)
         self.mp_draw = mp.solutions.drawing_utils
         
-        self.kf_y_l = SimpleKalmanFilter(); self.kf_z_l = SimpleKalmanFilter()
-        self.kf_y_r = SimpleKalmanFilter(); self.kf_z_r = SimpleKalmanFilter()
+        self.kf_y_l = SimpleKalmanFilter(); self.kf_z_l = SimpleKalmanFilter(); self.kf_roll_l = SimpleKalmanFilter()
+        self.kf_y_r = SimpleKalmanFilter(); self.kf_z_r = SimpleKalmanFilter(); self.kf_roll_r = SimpleKalmanFilter()
         
         # --- THE GOLDEN ANCHORS ---
         self.base_x = 0.45
         self.base_z = 0.71
-        
+        self.max_roll = math.radians(60)
         # LEFT ARM points outward to the Left (+Y direction)
         self.left_safe_quat = {'w': -0.5, 'x': -0.5, 'y': 0.5, 'z': 0.5}
         
@@ -76,6 +92,7 @@ class GestureControlNode(Node):
                     lm9 = hand_lms.landmark[9]
                     thumb = hand_lms.landmark[4]
                     index = hand_lms.landmark[8]
+                    wrist = hand_lms.landmark[0]
                     
                     # True Anatomical Hand Detection
                     hand_label = results.multi_handedness[idx].classification[0].label
@@ -84,6 +101,7 @@ class GestureControlNode(Node):
                     pinch_dist = math.hypot(thumb.x - index.x, thumb.y - index.y)
                     is_pinching = bool(pinch_dist < 0.05)
                     
+                    raw_roll = compute_hand_roll(wrist, lm9)
                     msg = Pose()
                     msg.position.x = self.base_x 
                     grip_msg = Bool()
@@ -96,14 +114,21 @@ class GestureControlNode(Node):
                         
                         msg.position.y = self.kf_y_l.update(raw_y)
                         msg.position.z = self.kf_z_l.update(raw_z)
+
+                        smooth_roll = self.kf_roll_l.update(raw_roll)
+                        smooth_roll = max(-self.max_roll, min(self.max_roll, smooth_roll))
                         
-                        msg.orientation.w = self.left_safe_quat['w']
-                        msg.orientation.x = self.left_safe_quat['x']
-                        msg.orientation.y = self.left_safe_quat['y']
-                        msg.orientation.z = self.left_safe_quat['z']
+                        q_rot   = make_rotation_z(smooth_roll)
+                        q_final = quaternion_multiply(self.left_safe_quat, q_rot)
+
+                        msg.orientation.w = q_final['w']
+                        msg.orientation.x = q_final['x']
+                        msg.orientation.y = q_final['y']
+                        msg.orientation.z = q_final['z']
                         
                         self.left_pose_pub.publish(msg)
                         self.left_grip_pub.publish(grip_msg)
+                        self._draw_debug(frame, hand_lms, smooth_roll, "L")
                     else:
                         # Right Arm Math & Orientation (Mirrored!)
                         raw_y = -1.16 + ((0.75 - lm9.x) * 1.0)
@@ -112,18 +137,49 @@ class GestureControlNode(Node):
                         msg.position.y = self.kf_y_r.update(raw_y)
                         msg.position.z = self.kf_z_r.update(raw_z)
                         
-                        msg.orientation.w = self.right_safe_quat['w']
-                        msg.orientation.x = self.right_safe_quat['x']
-                        msg.orientation.y = self.right_safe_quat['y']
-                        msg.orientation.z = self.right_safe_quat['z']
+                        smooth_roll = self.kf_roll_r.update(raw_roll)
+                        smooth_roll = max(-self.max_roll, min(self.max_roll, smooth_roll))
+
+                        q_rot   = make_rotation_z(smooth_roll)
+                        q_final = quaternion_multiply(self.right_safe_quat, q_rot)
+
+                        msg.orientation.w = q_final['w']
+                        msg.orientation.x = q_final['x']
+                        msg.orientation.y = q_final['y']
+                        msg.orientation.z = q_final['z']
                         
                         self.right_pose_pub.publish(msg)
                         self.right_grip_pub.publish(grip_msg)
+                        self._draw_debug(frame, hand_lms, smooth_roll, "R")
                         
             cv2.imshow("Dual Arm Control", frame)
             cv2.waitKey(1)
         except Exception as e:
             self.get_logger().error( f"main_loop error: {e}", throttle_duration_sec=3.0)
+
+    def _draw_debug(self, frame, hand_lms, roll_rad, label):
+       
+        h, w = frame.shape[:2]
+        wrist = hand_lms.landmark[0]
+        cx    = int(wrist.x * w)
+        cy    = int(wrist.y * h)
+
+        roll_deg = math.degrees(roll_rad)
+        color    = (0, 255, 0) if label == "L" else (0, 128, 255)
+
+        # Rotation arc
+        axes       = (30, 30)
+        start_deg  = -90
+        end_deg    = int(-90 + roll_deg)
+        cv2.ellipse(frame, (cx, cy), axes, 0, start_deg, end_deg, color, 2)
+
+        # Text
+        cv2.putText(
+            frame,
+            f"{label}: {roll_deg:+.0f}deg",
+            (cx - 40, cy - 40),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1
+        ) 
 
 def main(args=None):
     rclpy.init(args=args)
