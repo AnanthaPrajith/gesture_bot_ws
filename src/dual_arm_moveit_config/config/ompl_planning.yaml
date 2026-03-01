@@ -1,0 +1,36 @@
+planning_plugin: ompl_interface/OMPLPlanner
+request_adapters: >-
+  default_planner_request_adapters/AddTimeOptimalParameterization
+  default_planner_request_adapters/FixWorkspaceBounds
+  default_planner_request_adapters/FixStartStateBounds
+  default_planner_request_adapters/FixStartStateCollision
+  default_planner_request_adapters/FixStartStatePathConstraints
+start_state_max_bounds_error: 0.1
+
+left_arm:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - RRTConnectkConfigDefault
+    - PRMkConfigDefault
+    - ESTkConfigDefault
+
+right_arm:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - RRTConnectkConfigDefault
+    - PRMkConfigDefault
+    - ESTkConfigDefault
+
+start_state_max_dt: 0.5
+jiggle_fraction: 0.05          # ← increase from default 0.02
+max_sampling_attempts: 100
+
+planner_configs:
+  RRTConnectkConfigDefault:
+    type: geometric::RRTConnect
+    range: 0.0
+  PRMkConfigDefault:
+    type: geometric::PRM
+  ESTkConfigDefault:
+    type: geometric::EST
+    range: 0.0
