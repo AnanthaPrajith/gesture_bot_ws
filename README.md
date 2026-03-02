@@ -1,10 +1,9 @@
 # gesture_bot_ws
-Task given by Anmol Gupta
-Hello Team Sereact, Thank you for the wonderful opportunity that you have give me.
+Task given by Anmol Gupta, Sereact, Thank you for the wonderful opportunity that you have give me.
 I have implemented the given task using WSL2, ROS2 Humble, Docker and inbuilt laptop's camera.
 
 
-![Project Screenshot](assets/image2.png)
+![Project Screenshot](assets/image2.png)  ![Project Screenshot](assets/image1.png)
 
 
 # How to setup on Windows
