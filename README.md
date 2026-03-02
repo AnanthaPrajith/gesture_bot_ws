@@ -2,7 +2,7 @@
 Task given by Anmol Gupta
 
 Hello Team Sereact, Thank you for the wonderful opportunity that you have give me.
-I have implemented the given task using WSL2, ROS2 Humble and inbuilt laptop's camera.
+I have implemented the given task using WSL2, ROS2 Humble, Docker and inbuilt laptop's camera.
 
 # How to setup on Windows
 1. Clone the repository for Github.
@@ -25,3 +25,33 @@ docker compose run --rm gesture_bot
 6. Then in bottom left you could see **Add**, click and select **MotionPlanning**.
 7. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
 8. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
+
+# How to setup on Ubuntu
+1. Clone the repository for Github.
+```bash
+git clone https://github.com/Dharnish08/gesture_bot_ws.git
+```
+2. Find the camera port 0, 1, 2. select the camera.
+```bash
+ls/dev/video*
+```
+3. Update the same in **eye_bridge.py** 
+```bash
+cap = cv2.VideoCapture(0) # change 0 to your camera /dev/video*
+```
+4. Now run the python script "eye_bridge.py" on Terminal.
+```bash
+python3 ~/gesture_bot_ws/eye_bridge.py
+```
+5. Now open a new terminal, build the docker image. This might take few minutes
+```bash
+docker compose build
+```
+6. After successfully building the docker image, now run the following command. This will open a TMUX split terminals, you can toggle between terminals using **ctrl+B** then → ← ↑ ↓ .
+```bash
+docker compose run --rm gesture_bot
+```
+7. Now the rviz window pop-ups. In left side there is **Display**, there change the **Fixed Frame** from **map** to **world**.
+8. Then in bottom left you could see **Add**, click and select **MotionPlanning**.
+9. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
+10. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
