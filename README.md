@@ -83,3 +83,14 @@ self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7)
 ```
 > 4. Robots movement is scaled to the hand movement within the camera.
 > 5. No sudden arm jump uses seed state, 20Hz join publishing fills gaps smoothly, holds the last valid position.
+
+
+# Credits
+
+>[!IMPORTANT] 
+> 1. Thank you UniversalRobots for your Description Repo
+> https://github.com/UniversalRobots/Universal_Robots_ROS2_Description.git 
+> 2. Thank you PickNikRobotics for your Ros2_robotic_gripper Repo
+> https://github.com/PickNikRobotics/ros2_robotiq_gripper.git
+> 3. Thank you Willian Woodall for your Serial Repo
+> https://github.com/wjwwood/serial.git
