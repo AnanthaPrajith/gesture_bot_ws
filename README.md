@@ -74,7 +74,7 @@ docker compose run --rm gesture_bot
 | `robot_state_publisher` | Subscriber | `/joint_states` | `sensor_msgs/JointState` |
 
 # Attention Points
-[!NOTE]
+>[!NOTE]
 > 1. handled noise using Kalman Filter.
 > 2. Robot arms will subscribe to the published messages and reach the joint values within milliseconds.
 > 3. one human operator.
@@ -84,9 +84,7 @@ self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7)
 > 4. Robots movement is scaled to the hand movement within the camera.
 > 5. No sudden arm jump uses seed state, 20Hz join publishing fills gaps smoothly, holds the last valid position.
 
-
 # Credits
-
 >[!IMPORTANT] 
 > 1. Thank you UniversalRobots for your Description Repo
 > https://github.com/UniversalRobots/Universal_Robots_ROS2_Description.git 
