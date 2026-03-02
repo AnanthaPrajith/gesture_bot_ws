@@ -56,6 +56,7 @@ docker compose run --rm gesture_bot
 9. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
 10. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
 
+# Publisher Subscriber detailed table
 | Node | Type | Topic | Message |
 |---|---|---|---|
 | `gesture_control_node` | Publisher | `/left_target_pose` | `geometry_msgs/Pose` |
@@ -71,3 +72,14 @@ docker compose run --rm gesture_bot
 | `move_group` | Service Server | `/compute_ik` | `moveit_msgs/GetPositionIK` |
 | `ik_commander` | Service Client | `/compute_ik` | `moveit_msgs/GetPositionIK` |
 | `robot_state_publisher` | Subscriber | `/joint_states` | `sensor_msgs/JointState` |
+
+# Attention Points
+[!NOTE]
+> 1. handled noise using Kalman Filter.
+> 2. Robot arms will subscribe to the published messages and reach the joint values within milliseconds.
+> 3. one human operator.
+```bash
+self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7)
+```
+> 4. Robots movement is scaled to the hand movement within the camera.
+> 5. No sudden arm jump uses seed state, 20Hz join publishing fills gaps smoothly, holds the last valid position.
