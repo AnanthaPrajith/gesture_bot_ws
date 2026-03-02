@@ -6,6 +6,6 @@ I have implemented the given task using WSL2, ROS2 Humble and inbuilt laptop's c
 
 # How to setup
 Clone the repository for Github
-'''bash
+```bash
 git clone https://github.com/Dharnish08/gesture_bot_ws.git
-'''
+```
