@@ -5,7 +5,7 @@ I have implemented the given task using WSL2, ROS2 Humble, Docker and inbuilt la
 ![Project Screenshot](assets/image2.png)
 
 # How to setup on Windows
-1. Clone the repository for Github.
+1. Clone the repository from Github.
 ```bash
 git clone https://github.com/Dharnish08/gesture_bot_ws.git
 ```
