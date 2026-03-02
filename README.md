@@ -9,52 +9,60 @@ I have implemented the given task using WSL2, ROS2 Humble, Docker and inbuilt la
 ```bash
 git clone https://github.com/Dharnish08/gesture_bot_ws.git
 ```
-2. Now run the python script "eye_bridge.py" on Windows Terminal. This will act as a bridge for camera between windows and WSL2.
+2. Change the IP as your system in **gesture_control_node.py**.
+```bash
+self.client_socket.connect(('Your IP', 9999)) # <--- CHECK THIS IP
+```
+3. Now run the python script "eye_bridge.py" on Windows Terminal. This will act as a bridge for camera between windows and WSL2.
 ```bash
 python3 ~/gesture_bot_ws/eye_bridge.py
 ```
-3. After successfully running the above script, now inside WSL2 run the following line of command. This might take few minutes to finish running.
+4. After successfully running the above script, now inside WSL2 run the following line of command. This might take few minutes to finish running.
 ```bash
 docker compose build
 ```
-4. After successfully building the docker image, now run the following command. This will open a TMUX split terminals, you can toggle between terminals using **ctrl+B** then → ← ↑ ↓ .
+5. After successfully building the docker image, now run the following command. This will open a TMUX split terminals, you can toggle between terminals using **ctrl+B** then → ← ↑ ↓ .
 ```bash
 docker compose run --rm gesture_bot
 ```
-5. Now the rviz window pop-ups. In left side there is **Display**, there change the **Fixed Frame** from **map** to **world**.
-6. Then in bottom left you could see **Add**, click and select **MotionPlanning**.
-7. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
-8. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
+6. Now the rviz window pop-ups. In left side there is **Display**, there change the **Fixed Frame** from **map** to **world**.
+7. Then in bottom left you could see **Add**, click and select **MotionPlanning**.
+8. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
+9. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
 
 # How to setup on Ubuntu
 1. Clone the repository for Github.
 ```bash
 git clone https://github.com/Dharnish08/gesture_bot_ws.git
 ```
-2. Find the camera port 0, 1, 2. select the camera.
+2. Change the IP as your system in **gesture_control_node.py**.
+```bash
+self.client_socket.connect(('Your IP', 9999)) # <--- CHECK THIS IP
+```
+3. Find the camera port 0, 1, 2. select the camera.
 ```bash
 ls/dev/video*
 ```
-3. Update the same in **eye_bridge.py** 
+4. Update the same in **eye_bridge.py** 
 ```bash
 cap = cv2.VideoCapture(0) # change 0 to your camera /dev/video*
 ```
-4. Now run the python script "eye_bridge.py" on Terminal.
+5. Now run the python script "eye_bridge.py" on Terminal.
 ```bash
 python3 ~/gesture_bot_ws/eye_bridge.py
 ```
-5. Now open a new terminal, build the docker image. This might take few minutes
+6. Now open a new terminal, build the docker image. This might take few minutes
 ```bash
 docker compose build
 ```
-6. After successfully building the docker image, now run the following command. This will open a TMUX split terminals, you can toggle between terminals using **ctrl+B** then → ← ↑ ↓ .
+7. After successfully building the docker image, now run the following command. This will open a TMUX split terminals, you can toggle between terminals using **ctrl+B** then → ← ↑ ↓ .
 ```bash
 docker compose run --rm gesture_bot
 ```
-7. Now the rviz window pop-ups. In left side there is **Display**, there change the **Fixed Frame** from **map** to **world**.
-8. Then in bottom left you could see **Add**, click and select **MotionPlanning**.
-9. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
-10. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
+8. Now the rviz window pop-ups. In left side there is **Display**, there change the **Fixed Frame** from **map** to **world**.
+9. Then in bottom left you could see **Add**, click and select **MotionPlanning**.
+10. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
+11. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
 
 # Publisher Subscriber detailed table
 | Node | Type | Topic | Message |
