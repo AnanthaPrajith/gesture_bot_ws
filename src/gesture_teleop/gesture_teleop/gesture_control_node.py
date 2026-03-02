@@ -94,7 +94,7 @@ class GestureControlNode(Node):
                     is_left_arm = (hand_label == "Right") 
                     
                     pinch_dist = math.hypot(thumb.x - index.x, thumb.y - index.y)
-                    is_pinching = bool(pinch_dist < 0.05)
+                    is_pinching = bool(pinch_dist < 0.08)
                     
                     raw_roll = compute_hand_roll(wrist, lm9)
                     msg = Pose()
