@@ -55,3 +55,19 @@ docker compose run --rm gesture_bot
 8. Then in bottom left you could see **Add**, click and select **MotionPlanning**.
 9. In **MotionPlanning** window select **Context**, in **Planning Library** select the unspecified planner to **RRTConnectkConfigDefault**.
 10. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
+
+| Node | Type | Topic | Message |
+|---|---|---|---|
+| `gesture_control_node` | Publisher | `/left_target_pose` | `geometry_msgs/Pose` |
+| `gesture_control_node` | Publisher | `/right_target_pose` | `geometry_msgs/Pose` |
+| `gesture_control_node` | Publisher | `/left_gripper_cmd` | `std_msgs/Bool` |
+| `gesture_control_node` | Publisher | `/right_gripper_cmd` | `std_msgs/Bool` |
+| `ik_commander` | Subscriber | `/left_target_pose` | `geometry_msgs/Pose` |
+| `ik_commander` | Subscriber | `/right_target_pose` | `geometry_msgs/Pose` |
+| `ik_commander` | Subscriber | `/left_gripper_cmd` | `std_msgs/Bool` |
+| `ik_commander` | Subscriber | `/right_gripper_cmd` | `std_msgs/Bool` |
+| `ik_commander` | Publisher | `/joint_states` | `sensor_msgs/JointState` |
+| `move_group` | Subscriber | `/joint_states` | `sensor_msgs/JointState` |
+| `move_group` | Service Server | `/compute_ik` | `moveit_msgs/GetPositionIK` |
+| `ik_commander` | Service Client | `/compute_ik` | `moveit_msgs/GetPositionIK` |
+| `robot_state_publisher` | Subscriber | `/joint_states` | `sensor_msgs/JointState` |
