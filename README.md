@@ -5,7 +5,7 @@ I have implemented the given task using WSL2, ROS2 Humble, Docker and inbuilt la
 ![Project Screenshot](assets/image2.png)
 
 # How to setup on Windows
-1. Clone the repository for Github.
+1. Clone the repository from Github.
 ```bash
 git clone https://github.com/Dharnish08/gesture_bot_ws.git
 ```
@@ -85,7 +85,7 @@ docker compose run --rm gesture_bot
 >[!NOTE]
 > 1. handled noise using Kalman Filter.
 > 2. Robot arms will subscribe to the published messages and reach the joint values within milliseconds.
-> 3. one human operator.
+> 3. One human operator.
 > ```bash
 > self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7)
 > ```
