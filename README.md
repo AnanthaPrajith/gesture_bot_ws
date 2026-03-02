@@ -31,6 +31,8 @@ docker compose run --rm gesture_bot
 9. For better view, you can uncheck the **Query Goal State** in **Planning Request**.
 
 # How to setup on Ubuntu
+>[!NOTE]
+>Haven't tested it yet, But It's possible.
 1. Clone the repository for Github.
 ```bash
 git clone https://github.com/Dharnish08/gesture_bot_ws.git
