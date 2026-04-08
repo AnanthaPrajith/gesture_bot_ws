@@ -1,6 +1,7 @@
 # gesture_bot_ws
-Task given by Anmol Gupta, Sereact, Thank you for the wonderful opportunity that you have give me.
-I have implemented the given task using WSL2, ROS2 Humble, Docker and inbuilt laptop's camera.
+
+>[!NOTE]
+>I have modified the important problem(08.04.2026). I have added Delta-Mapping instead of direct robot mapping with camera co-ordinate.
 
 ![Project Screenshot](assets/image2.png)
 
