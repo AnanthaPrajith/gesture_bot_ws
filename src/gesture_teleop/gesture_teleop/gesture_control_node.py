@@ -61,7 +61,7 @@ class GestureControlNode(Node):
         self.right_safe_quat = {'w': 0.5, 'x': 0.5, 'y': 0.5, 'z': 0.5}
         
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(('172.23.112.1', 9999)) # <--- CHECK THIS IP
+        self.client_socket.connect(('192.168.0.177', 9999)) # <--- CHECK THIS IP
         self.data = b""
         self.payload_size = struct.calcsize("Q")
         
